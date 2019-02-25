@@ -23,9 +23,12 @@ void setup ()
 }
 public void setBombs()
 {
-    int row = (int)(Math.random())*NUM_ROWS;
-    int col = (int)(Math.random())*NUM_COLS;
-    if(!bombs.contains(buttons[row][col])
+    //int row = (int)(Math.random()*NUM_ROWS);
+    //int col = (int)(Math.random()*NUM_COLS);
+    int row = 0;
+    int col = 0;
+    System.out.println(row + ", " + col);
+    if(!bombs.contains(buttons[row][col]))
         bombs.add(buttons[row][col]);
 }
 
@@ -76,43 +79,71 @@ public class MSButton
     {
         return clicked;
     }
-    // called by manager
+    // called by manager (Karen?)
     
-    public void mousePressed () 
+    public void mousePressed() 
     {
         clicked = true;
-        //your code here
+        if (mouseButton == RIGHT) 
+        {
+            marked = !marked;
+            if (marked == false)
+                clicked = false;
+        } 
+        else if (bombs.contains(this))
+            displayLosingMessage();
+        else if(countBombs(r, c) > 0)
+            setLabel("" + countBombs(r, c));
+        else
+            mousePressed();
+
     }
 
     public void draw () 
     {    
-        if (marked)
+        if (isMarked())
             fill(0);
-        // else if( clicked && bombs.contains(this) ) 
-        //     fill(255,0,0);
-        else if(clicked)
+        else if(isClicked() && bombs.contains(this) ) 
+             fill(255,0,0);
+        else if(isClicked())
             fill( 200 );
         else 
+        {
             fill( 100 );
+        }
 
         rect(x, y, width, height);
         fill(0);
         text(label,x+width/2,y+height/2);
+        //System.out.println(label + countBombs(r, c));
     }
     public void setLabel(String newLabel)
     {
         label = newLabel;
     }
-    public boolean isValid(int r, int c)
+    public boolean isValid(int row, int col)
     {
-        //your code here
+         for ( int r = 0; r < NUM_ROWS; r++ )
+            for ( int c = 0; c < NUM_COLS; c++ )
+                if ( row == r )
+                    if ( col == c)
+                        return true;
         return false;
     }
     public int countBombs(int row, int col)
     {
-        int numBombs = 0;
-        //your code here
-        return numBombs;
+    int sum = 0;
+        for (int i = row - 1; i <= row + 1; i++)
+         {
+            for (int z = col - 1; z <= col + 1; z++)
+            {
+                if(row == i && col == z)
+                    sum = sum;
+                else if (isValid(i, z) == true && bombs.contains(buttons[row][col]))
+                    sum++;
+    }
+  }
+  return sum;
     }
 }
 
