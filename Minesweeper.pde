@@ -2,8 +2,9 @@
 import de.bezier.guido.*;
 public final static int NUM_ROWS = 20, NUM_COLS = 20, NUM_BOMBS = 60;
 private MSButton[][] buttons; //2d array of minesweeper buttons
-private ArrayList <MSButton> bombs = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
-
+private ArrayList <MSButton> bombs = new ArrayList <MSButton>();
+private ArrayList <MSButton> bombs2 = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
+private boolean isLost = false;
 void setup ()
 {
     size(400, 400);
@@ -43,7 +44,17 @@ public boolean isWon()
 }
 public void displayLosingMessage()
 {
-    //your code here
+    String loser = "Too bad.  Try Again?";
+    for(int i = 0; i < loser.length(); i++)
+    {
+        buttons[9][i].clicked = true;
+        buttons[9][i].setLabel(loser.substring(i,i+1));
+    }
+    isLost = true;
+    //bombs2.add(buttons[this.r][this.c]);
+    bombs = new ArrayList <MSButton>();
+
+
 }
 public void displayWinningMessage()
 {
@@ -81,6 +92,8 @@ public class MSButton
     
     public void mousePressed() 
     {
+        if (isLost == false)
+        {
         clicked = true;
         if (mouseButton == RIGHT) 
         {
@@ -89,7 +102,10 @@ public class MSButton
                 clicked = false;
         } 
         else if (bombs.contains(this))
-            displayLosingMessage();
+            {
+                bombs2.add(this);
+                displayLosingMessage();
+            }
         else if(countBombs(r, c) > 0)
             setLabel("" + countBombs(r, c));
         else
@@ -99,6 +115,7 @@ public class MSButton
                             buttons[i][z].mousePressed();
 
     }
+}
 
     public void draw () 
     {    
@@ -106,6 +123,8 @@ public class MSButton
             fill(0);
         else if(isClicked() && bombs.contains(this) ) 
              fill(255,0,0);
+        else if(bombs2.contains(this))
+            fill(255,0,0);
         else if(isClicked())
             fill( 200 );
         else 
