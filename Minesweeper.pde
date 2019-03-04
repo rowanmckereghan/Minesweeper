@@ -1,10 +1,10 @@
-
 import de.bezier.guido.*;
 public final static int NUM_ROWS = 20, NUM_COLS = 20, NUM_BOMBS = 60;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs = new ArrayList <MSButton>();
 private ArrayList <MSButton> bombs2 = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
 private boolean isLost = false;
+private boolean isWon = false;
 void setup ()
 {
     size(400, 400);
@@ -34,13 +34,8 @@ public void setBombs()
 public void draw ()
 {
     background( 0 );
-    if(isWon())
+    if(isWon == true)
         displayWinningMessage();
-}
-public boolean isWon()
-{
-    //your code here
-    return false;
 }
 public void displayLosingMessage()
 {
@@ -58,7 +53,14 @@ public void displayLosingMessage()
 }
 public void displayWinningMessage()
 {
-    //your code here
+    String winner = "You Are The Champion";
+    for(int i = 0; i < winner.length(); i++)
+    {
+        buttons[9][i].clicked = true;
+        buttons[9][i].setLabel(winner.substring(i,i+1));
+    }
+    //bombs2.add(buttons[this.r][this.c]);
+    bombs = new ArrayList <MSButton>();
 }
 
 public class MSButton
@@ -131,10 +133,10 @@ public class MSButton
         {
             fill( 100 );
         }
-
         rect(x, y, width, height);
         fill(0);
         text(label,x+width/2,y+height/2);
+        if ()
         //System.out.println(label + countBombs(r, c));
     }
     public void setLabel(String newLabel)
