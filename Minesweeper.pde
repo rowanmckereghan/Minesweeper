@@ -65,7 +65,7 @@ public void displayWinningMessage()
 
 public class MSButton
 {
-    private int r, c;
+    private int r, c, markSum;
     private float x,y, width, height;
     private boolean clicked, marked;
     private String label;
@@ -80,6 +80,7 @@ public class MSButton
         y = r*height;
         label = "";
         marked = clicked = false;
+        markSum = 0;
         Interactive.add( this ); // register it with the manager
     }
     public boolean isMarked()
@@ -94,7 +95,7 @@ public class MSButton
     
     public void mousePressed() 
     {
-        if (isLost == false)
+        if (isLost == false && isWon == false)
         {
         clicked = true;
         if (mouseButton == RIGHT) 
@@ -102,6 +103,12 @@ public class MSButton
             marked = !marked;
             if (marked == false)
                 clicked = false;
+            for (int k = 0; k < buttons.length; k++)
+                for(int m = 0; m < buttons[k].length; m++)
+                    if(bombs.contains(buttons[k][m]) && buttons[k][m].isMarked())
+                        markSum++;
+            if(markSum == NUM_BOMBS)
+                isWon = true;
         } 
         else if (bombs.contains(this))
             {
@@ -136,7 +143,6 @@ public class MSButton
         rect(x, y, width, height);
         fill(0);
         text(label,x+width/2,y+height/2);
-        if ()
         //System.out.println(label + countBombs(r, c));
     }
     public void setLabel(String newLabel)
