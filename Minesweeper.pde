@@ -1,5 +1,5 @@
 import de.bezier.guido.*;
-public final static int NUM_ROWS = 20, NUM_COLS = 20, NUM_BOMBS = 60;
+public final static int NUM_ROWS = 20, NUM_COLS = 20, NUM_BOMBS = 20;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs = new ArrayList <MSButton>();
 private ArrayList <MSButton> bombs2 = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
@@ -67,7 +67,7 @@ public class MSButton
 {
     private int r, c, markSum;
     private float x,y, width, height;
-    private boolean clicked, marked;
+    private boolean clicked, marked, realClick, allClicked;
     private String label;
     
     public MSButton ( int rr, int cc )
@@ -79,7 +79,7 @@ public class MSButton
         x = c*width;
         y = r*height;
         label = "";
-        marked = clicked = false;
+        marked = clicked = realClick = allClicked = false;
         markSum = 0;
         Interactive.add( this ); // register it with the manager
     }
@@ -99,16 +99,39 @@ public class MSButton
         {
         clicked = true;
         if (mouseButton == RIGHT) 
-        {
+         {
+            if (realClick == true)
+            {
+
+            }
+            else
+            {
             marked = !marked;
             if (marked == false)
+            {
                 clicked = false;
+                this.setLabel("");
+            }
             for (int k = 0; k < buttons.length; k++)
                 for(int m = 0; m < buttons[k].length; m++)
                     if(bombs.contains(buttons[k][m]) && buttons[k][m].isMarked())
                         markSum++;
-            if(markSum == NUM_BOMBS)
+            for (int x = 0; x < buttons.length; x++)
+            {
+                for(int y = 0; y < buttons[x].length; y++)
+                {
+                    if(!buttons[x][y].isClicked())
+                    {
+                        allClicked = false;
+                        break;
+                    }
+                    else
+                        allClicked = true;
+                }
+            }
+            if(markSum == NUM_BOMBS && allClicked == true)
                 isWon = true;
+        }
         } 
         else if (bombs.contains(this))
             {
@@ -116,7 +139,10 @@ public class MSButton
                 displayLosingMessage();
             }
         else if(countBombs(r, c) > 0)
+        {
             setLabel("" + countBombs(r, c));
+            this.realClick = true;
+        }
         else
             for(int i = r - 1; i <= r + 1; i++)
                 for(int z = c - 1; z <= c + 1; z++)
